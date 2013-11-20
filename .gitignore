@@ -11,8 +11,21 @@
 *.so
 *.so.*
 *.dylib
+*.Po
 
 # Executables
 *.exe
 *.out
 *.app
+
+# Autoconf files
+config.log
+config.status
+*.tar.gz
+stamp-h1
+config.h
+config.h.in
+autom4te.cache
+
+#Emacs temp files
+*~
