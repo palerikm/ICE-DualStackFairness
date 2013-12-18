@@ -29,6 +29,31 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_CHECK_FUNCS([memset socket])
 
+
+AM_CONDITIONAL(CHECK, "false")
+AC_ARG_WITH([check],
+  [AS_HELP_STRING([--with-check],
+  [use Check for unit testing @<:@default=no@:>@])],
+  [],
+  [with_check=no])
+          
+  LIBCHECK=
+  AS_IF([test "x$with_check" != xno],
+    [AC_CHECK_LIB([check], [srunner_create],
+    [AC_SUBST([LIBCHECK], ["-lcheck"])
+     AM_CONDITIONAL(CHECK, "true")
+     AC_DEFINE([HAVE_CHECK], [1],
+               [Define if you have check])],
+    [AC_MSG_FAILURE(
+      [--with-check was given, but test for check failed])],
+      [])])
+
+
+
+
+
+
 AC_CONFIG_FILES([Makefile
-                src/Makefile])
+                src/Makefile
+                test/Makefile])
 AC_OUTPUT

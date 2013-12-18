@@ -636,6 +636,9 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+LIBCHECK
+CHECK_FALSE
+CHECK_TRUE
 CXXCPP
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
@@ -767,6 +770,7 @@ enable_dependency_tracking
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+with_check
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1420,6 +1424,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
+  --with-check            use Check for unit testing [default=no]
 
 Some influential environment variables:
   CC          C compiler command
@@ -16144,7 +16149,91 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile"
+
+ if "false"; then
+  CHECK_TRUE=
+  CHECK_FALSE='#'
+else
+  CHECK_TRUE='#'
+  CHECK_FALSE=
+fi
+
+
+# Check whether --with-check was given.
+if test "${with_check+set}" = set; then :
+  withval=$with_check;
+else
+  with_check=no
+fi
+
+
+  LIBCHECK=
+  if test "x$with_check" != xno; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for srunner_create in -lcheck" >&5
+$as_echo_n "checking for srunner_create in -lcheck... " >&6; }
+if ${ac_cv_lib_check_srunner_create+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcheck  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char srunner_create ();
+int
+main ()
+{
+return srunner_create ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_check_srunner_create=yes
+else
+  ac_cv_lib_check_srunner_create=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_check_srunner_create" >&5
+$as_echo "$ac_cv_lib_check_srunner_create" >&6; }
+if test "x$ac_cv_lib_check_srunner_create" = xyes; then :
+  LIBCHECK="-lcheck"
+
+      if "true"; then
+  CHECK_TRUE=
+  CHECK_FALSE='#'
+else
+  CHECK_TRUE='#'
+  CHECK_FALSE=
+fi
+
+
+$as_echo "#define HAVE_CHECK 1" >>confdefs.h
+
+else
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "--with-check was given, but test for check failed
+See \`config.log' for more details" "$LINENO" 5; }
+fi
+
+fi
+
+
+
+
+
+
+ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -16285,6 +16374,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${CHECK_TRUE}" && test -z "${CHECK_FALSE}"; then
+  as_fn_error $? "conditional \"CHECK\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${CHECK_TRUE}" && test -z "${CHECK_FALSE}"; then
+  as_fn_error $? "conditional \"CHECK\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -17259,6 +17356,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
