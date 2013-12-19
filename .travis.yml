@@ -7,3 +7,5 @@ before_install:
 
 # Change this to your needs
 script: autoreconf --install && ./configure --with-check && make && make check
+
+after_success: ./update_pages.sh
