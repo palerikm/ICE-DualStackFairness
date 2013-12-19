@@ -6,6 +6,8 @@ before_install:
  - sudo apt-get install check
 
 # Change this to your needs
-script: autoreconf --install && ./configure --with-check && make && make check
+script: 
+  - ./bootstrap.sh
+  - ./configure --with-check && make && make check
 
 after_success: ./update_pages.sh
