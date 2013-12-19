@@ -11,6 +11,9 @@ do
     mv $FILE $DST_FILE 
 done
 
+git config --global user.email "travis@travis-ci.org"
+git config --global user.name "Travis"
+
 git checkout gh-pages
 mkdir deploy
 cp $DST_FILE deploy
