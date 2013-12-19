@@ -14,12 +14,14 @@ done
 git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis"
 
-git checkout gh-pages
-mkdir deploy
-cp $DST_FILE deploy
+git clone -b gh-pages https://${GH_TOKEN}@github.com/palerikm/HappyE-ICE-Test.git deploy
+
+mkdir deploy/dist_files
+
+cp $DST_FILE deploy/dist_files
 cd deploy
 
-git add -A
+git add -A dist_files
 git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
 git push origin gh-pages
 
