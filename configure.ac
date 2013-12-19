@@ -30,7 +30,6 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_CHECK_FUNCS([memset socket])
 
-
 AM_CONDITIONAL(CHECK, "false")
 AC_ARG_WITH([check],
   [AS_HELP_STRING([--with-check],
