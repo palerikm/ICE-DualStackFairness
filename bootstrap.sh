@@ -1,5 +1,9 @@
-#/bin/sh
+#!/bin/sh
+mkdir m4 build-aux
 
-automake --add-missing
+aclocal
+autoconf
+automake --add-missing --force-missing
 
-autoreconf --install
+
+##autoreconf --install
