@@ -51,46 +51,18 @@ void printChecklist(struct candidatePair *pair_list, uint32_t num){
                    
 
 
-
-
-int main (int argc, char **argv)
+int parseLocalCandidateFile(struct candidate *candidateList, int listLen,
+                            struct PriorityTable *pTable,
+                            char *filename)
 {
-    int c;
-    char *input = argv[1];
     FILE *input_file;
     char line[80];
     char cand_type[10];
     char addr_type[10];
     char component_type[10];
-    const uint32_t list_len = 100;
-    struct candidate candidateList[list_len];
     uint32_t numberOfCandidates = 0;
-    //struct prefTable prefT[2];
-    
-        
-        
-    //fillPrefTable( prefT, 2, 100);
-    
-    struct PriorityTable pTable;
-    pTable.hostPri.IPv6_lpriority = 60000;
-    pTable.hostPri.IPv4_lpriority = 50000;
-    pTable.hostPri.IPv6_nInRow = 0;
-    pTable.hostPri.IPv4_nInRow = 0;
-    
-    pTable.rflxPri.IPv6_lpriority = 60000;
-    pTable.rflxPri.IPv4_lpriority = 50000;
-    pTable.rflxPri.IPv6_nInRow = 0;
-    pTable.rflxPri.IPv4_nInRow = 0;
-    
-    pTable.relayPri.IPv6_lpriority = 60000;
-    pTable.relayPri.IPv4_lpriority = 50000;
-    pTable.relayPri.IPv6_nInRow = 0;
-    pTable.relayPri.IPv4_nInRow = 0;
-    
-    pTable.maxInRow = 2;
-    
 
-    input_file = fopen(input, "r");
+    input_file = fopen(filename, "r");
     
     if (input_file == 0)
     {
@@ -108,7 +80,7 @@ int main (int argc, char **argv)
             //printf("%s, %s, %s \n", cand_type, addr_type, component_type);
 
             numberOfCandidates = addCandidate( candidateList, numberOfCandidates,
-                                               &pTable, 
+                                               pTable, 
                                                stringToCandidateType(cand_type,10),
                                                stringToIpAddrType(addr_type, 10),
                                                stringToComponentId(component_type, 10));
@@ -117,78 +89,32 @@ int main (int argc, char **argv)
     }
     
     fclose(input_file);
+
+    return numberOfCandidates;
+}
+
+int main (int argc, char **argv)
+{
+    const uint32_t list_len = 100;
+    struct candidate candidateList[list_len];
+    uint32_t numberOfCandidates = 0;
+    
+    
+    struct PriorityTable pTable;
+    memset (&pTable, 0, sizeof(pTable));
+    pTable.IPv6_start_priority = 60000;
+    pTable.IPv4_start_priority = 59000;
+        
+    pTable.maxInRow = atoi(argv[1]);
+    
+    numberOfCandidates = parseLocalCandidateFile(candidateList, list_len,
+                                                 &pTable,
+                                                 argv[2]);
     
     qsort(candidateList, numberOfCandidates, sizeof(*candidateList), candcmp);
 
     printCandidatelist(candidateList, numberOfCandidates);
     
     return 0;
-    
-
-
-    /*
-    const uint32_t list_len = 10;
-    struct candidatePair candPair[list_len];
-    //struct candidatePair *checlist = candPair;
-    struct prefTable prefT[2];
-    uint32_t remote_ipv6 = 2122633471;
-        
-        
-    fillPrefTable( prefT, 2, 100);
-        
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 0,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv4,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 1,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv6,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 2,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv6,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 3,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv6,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 4,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv6,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 5,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv6,
-                  1);
-    
-    addCandidate( prefT, 2, 
-                  candPair, list_len, 6,
-                  remote_ipv6,
-                  ICE_CAND_TYPE_HOST,
-                  IPv4,
-                  1);
-    
-    
-    qsort(candPair, 7, sizeof(*candPair), paircmp);
-    
-    printChecklist(candPair, list_len);
-    */
 }
 

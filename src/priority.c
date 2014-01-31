@@ -1,4 +1,5 @@
 
+#include<stdlib.h>
 #include "../include/priority.h"
 
 
@@ -19,6 +20,10 @@ uint16_t ICELIB_calculateLocalPreference(struct PriorityTable *inPriTbl,
                                          IpType addrType)
 {
     uint16_t retVal = 0;
+
+    uint16_t IPv6_startPri = inPriTbl->IPv6_start_priority;
+    uint16_t IPv4_startPri = inPriTbl->IPv4_start_priority;
+    uint16_t priDiff = abs(IPv6_startPri-IPv4_startPri);
     struct CandTypePriorityTable *priTbl;
 
     switch(type){
@@ -35,51 +40,14 @@ uint16_t ICELIB_calculateLocalPreference(struct PriorityTable *inPriTbl,
         priTbl = &inPriTbl->rflxPri;
         break;
     }
-
-
-    
-
-    
-    //printf("CURRENT IPv6 pri: %u\n",priTbl->IPv6_lpriority); 
-    //printf("CURRENT IPv4 pri: %u\n",priTbl->IPv4_lpriority); 
-        
-
-
-    //Do we need to adjust the pri values
-    if(priTbl->IPv6_nInRow >= inPriTbl->maxInRow ){
-        priTbl->IPv6_lpriority = priTbl->IPv6_lpriority - 20000;
-        
-        printf("####  Adjusting IPv6 #####\n");
-        printf("IPv6 pri: %u\n",priTbl->IPv6_lpriority); 
-        printf("IPv4 pri: %u\n",priTbl->IPv4_lpriority); 
-
-        priTbl->IPv6_nInRow = 0;
-        priTbl->IPv4_nInRow = 0;
-    }
-    if(priTbl->IPv4_nInRow >= inPriTbl->maxInRow){
-        priTbl->IPv4_lpriority = priTbl->IPv4_lpriority - 20000;
-                
-        printf("####  Adjusting IPv4 #####\n");
-        printf("New IPv4 pri: %u\n",priTbl->IPv4_lpriority);
-        printf("Old IPv6 pri: %u\n",priTbl->IPv6_lpriority); 
-        priTbl->IPv4_nInRow = 0;
-        priTbl->IPv6_nInRow = 0;
-    }
-    
-    printf("Adding: ");
     if(addrType == IPv6) {
-        retVal = priTbl->IPv6_lpriority;
+        retVal = IPv6_startPri - (priDiff*2*(priTbl->IPv6_nInRow/inPriTbl->maxInRow));
         priTbl->IPv6_nInRow++;   
-         printf("IPv6\n");
     }
     else {
-        retVal = priTbl->IPv4_lpriority; 
+        retVal = IPv4_startPri - (priDiff*2*(priTbl->IPv4_nInRow/inPriTbl->maxInRow));
         priTbl->IPv4_nInRow++;   
-        printf("IPv4\n");
-        
     }
- 
-    printf("Returning: %i\n", retVal);
 
     return retVal;
 }

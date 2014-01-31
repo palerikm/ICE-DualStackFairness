@@ -14,13 +14,13 @@ typedef enum {
 
 
 struct CandTypePriorityTable{
-    uint32_t IPv6_lpriority;
-    uint32_t IPv4_lpriority;
     uint32_t IPv6_nInRow;
     uint32_t IPv4_nInRow;
 };
 
 struct PriorityTable{
+    uint16_t IPv6_start_priority;
+    uint16_t IPv4_start_priority;
     struct CandTypePriorityTable hostPri;
     struct CandTypePriorityTable rflxPri;
     struct CandTypePriorityTable relayPri;
