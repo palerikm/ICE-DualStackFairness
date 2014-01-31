@@ -16,6 +16,7 @@ struct candidate {
 uint32_t addCandidate( struct candidate *candidateList, 
                        uint32_t numberOfCandidates, 
                        struct PriorityTable *pTable, 
+                       uint32_t priority,
                        ICE_CANDIDATE_TYPE candType,
                        IpType ipType,
                        uint32_t componentId);

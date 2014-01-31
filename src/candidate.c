@@ -9,18 +9,22 @@
 
 uint32_t addCandidate( struct candidate *candidateList, 
                        uint32_t numberOfCandidates, 
-                       struct PriorityTable *pTable, 
+                       struct PriorityTable *pTable,
+                       uint32_t priority,
                        ICE_CANDIDATE_TYPE candType,
                        IpType ipType,
                        uint32_t componentId){
     
     uint32_t local_pri = 0;
-    local_pri = ICELIB_calculatePriority(candType, 
-                                         componentId, 
-                                         ICELIB_calculateLocalPreference(pTable,
-                                                                         candType,
+    if(priority == 0){
+        local_pri = ICELIB_calculatePriority(candType, 
+                                             componentId, 
+                                             ICELIB_calculateLocalPreference(pTable,
+                                                                             candType,
                                                                          ipType));
-    
+    }else{
+        local_pri = priority;
+    }
     candidateList[numberOfCandidates].priority = local_pri;
     candidateList[numberOfCandidates].ipType = ipType;
     candidateList[numberOfCandidates].type = candType;
@@ -30,19 +34,24 @@ uint32_t addCandidate( struct candidate *candidateList,
 
 
 void printCandidate(struct candidate *cand) {
+    if(cand->ipType == IPv4)
+        printf("\x1B[31m");
+    else
+        printf("\x1B[34m");
     if(cand->type == ICE_CAND_TYPE_HOST) printf("HOST  ");
     if(cand->type == ICE_CAND_TYPE_SRFLX) printf("SRFLX ");
     if(cand->type == ICE_CAND_TYPE_RELAY) printf("RELAY ");
 
 
     if(cand->ipType == NONE){
-        printf("Empty\n");
+        printf("Empty");
         return;
     }
     if(cand->ipType == IPv4) printf("IPv4 ");
     if(cand->ipType == IPv6) printf("IPv6 ");
     printf("(%i) ", cand->componentId);
-    printf("Priority: %u\n", cand->priority); 
+    printf("Priority: %u", cand->priority);
+    printf("\x1B[30m");
 }
 
 
@@ -52,6 +61,7 @@ void printCandidatelist(struct candidate *cand_list, uint32_t num){
         printf("(%i) ", i+1);
         if(i<9) printf(" ");
         printCandidate(&cand_list[i]);
+        printf("\n");
     }
 }
 
