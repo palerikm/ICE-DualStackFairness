@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include"include/priority.h"
-
+#include"include/stringhelp.h"
 
 struct candidate {
     ICE_CANDIDATE_TYPE type;
@@ -24,12 +24,6 @@ struct candidatePair {
     uint64_t pair_priority;
 };
 
-
-
-struct prefTable {
-    uint32_t pref;
-    uint32_t nUsed;
-};
 
 int paircmp(const void *p1, const void *p2)
 {
@@ -96,15 +90,6 @@ void printCandidatelist(struct candidate *cand_list, uint32_t num){
     }
 }
 
-void fillPrefTable( struct prefTable *prefT, uint32_t num, uint32_t numCand){
-    uint32_t i;
-    uint32_t start = 65534;
-
-    for(i=0;i<num;i++){
-        prefT[i].pref = start-i*numCand;
-        prefT[i].nUsed = 0;
-    }
-}
 
 uint32_t addCandidate( struct candidate *candidateList, 
                        uint32_t numberOfCandidates, 
@@ -114,16 +99,11 @@ uint32_t addCandidate( struct candidate *candidateList,
                        uint32_t componentId){
     
     uint32_t local_pri = 0;
-    
-    
     local_pri = ICELIB_calculatePriority(candType, 
                                          componentId, 
                                          ICELIB_calculateLocalPreference(pTable,
                                                                          candType,
                                                                          ipType));
-        
-
-    
     
     candidateList[numberOfCandidates].priority = local_pri;
     candidateList[numberOfCandidates].ipType = ipType;
@@ -133,47 +113,7 @@ uint32_t addCandidate( struct candidate *candidateList,
 }
                    
 
-ICE_CANDIDATE_TYPE stringToCandidateType(const char *s, int len)
-{
-    if(strncmp(s, "HOST", len) == 0)
-        return ICE_CAND_TYPE_HOST;
-    if(strncmp(s, "RFLX", len) == 0)
-        return ICE_CAND_TYPE_SRFLX;
-    if(strncmp(s, "RELAY", len) == 0)
-        return ICE_CAND_TYPE_RELAY;
 
-    return ICE_CAND_TYPE_NONE;
-}
-
-IpType stringToIPAddrype(const char *s, int len)
-{
-    if(strncmp(s, "IPv4", len) == 0)
-        return IPv4;
-    if(strncmp(s, "IPv6", len) == 0)
-        return IPv6;
-    
-    return NONE;
-}
-
-IpType stringToIpAddrType(const char *s, int len)
-{
-    if(strncmp(s, "IPv4", len) == 0)
-        return IPv4;
-    if(strncmp(s, "IPv6", len) == 0)
-        return IPv6;
-    
-    return NONE;
-}
-
-uint32_t stringToComponentId(const char *s, int len)
-{
-    if(strncmp(s, "RTP", len) == 0)
-        return 1;
-    if(strncmp(s, "RTCP", len) == 0)
-        return 2;
-    
-    return NONE;
-}
 
 
 int main (int argc, char **argv)

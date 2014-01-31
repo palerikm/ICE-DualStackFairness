@@ -2,6 +2,9 @@
 #include<stdio.h>
 #include<stdint.h>
 
+#ifndef PRIORITY_H
+#define PRIORITY_H
+
 typedef enum {
     NONE,
     IPv4,
@@ -51,3 +54,4 @@ uint32_t ICELIB_calculatePriority(ICE_CANDIDATE_TYPE type, uint16_t compid, uint
 uint16_t ICELIB_calculateLocalPreference(struct PriorityTable *priTbl,
                                          ICE_CANDIDATE_TYPE type,
                                          IpType addrType);
+#endif
